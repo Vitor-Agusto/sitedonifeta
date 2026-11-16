@@ -1,0 +1,963 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Fourncy.ia – Hub de vendas</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap">
+<style>
+:root{--bg:#070B1F;--glass:rgba(255,255,255,.055);--line:rgba(160,180,255,.16);--ink:#F2F5FF;--mute:#9AA6CC;--blue:#2F7BFF;--vio:#6B4DFF;--cy:#5FE6F5;--ml:#F2C200;--tt:#25D6CF;--sp:#FF6A3D;--up:#4FE0A0;--down:#FF8A7A;--warn:#F0B14A;--ease:cubic-bezier(.2,.7,.2,1);
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);color-scheme:dark}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}
+body{margin:0;color:var(--ink);font:400 15px/1.5 'Plus Jakarta Sans',system-ui,sans-serif;min-height:100vh;
+background:radial-gradient(900px 500px at 92% 30%,rgba(70,90,255,.22),transparent 60%),radial-gradient(700px 500px at 20% 90%,rgba(95,230,245,.08),transparent 60%),var(--bg)}
+button,input,select,textarea{font:inherit;color:inherit}
+button{cursor:pointer}
+:focus-visible{outline:2px solid var(--cy);outline-offset:2px}
+svg.i{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round;flex:none}
+h1,h2,h3,h4{margin:0}
+.hide{display:none!important}
+.up{color:var(--up)}.down{color:var(--down)}.mute{color:var(--mute)}
+@media (prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;animation-delay:0s!important;transition-duration:.01ms!important}}
+
+</style>
+<style>
+.app{display:grid;grid-template-columns:280px minmax(0,1fr);gap:28px;max-width:1380px;margin:0 auto;padding:20px}
+.side{position:sticky;top:20px;height:calc(100vh - 40px);display:flex;flex-direction:column;padding:22px 16px}
+.brand{display:flex;align-items:center;gap:12px;font:600 26px 'Plus Jakarta Sans';letter-spacing:-.03em;padding:0 8px 26px}
+.brand b{color:var(--cy);font-weight:600}
+.mark{width:42px;height:42px;border-radius:13px;background:linear-gradient(135deg,var(--cy),var(--blue) 45%,var(--vio));display:grid;place-items:center;font-weight:800;font-size:22px;color:#fff}
+nav{display:flex;flex-direction:column;gap:4px}
+nav button{display:flex;align-items:center;gap:14px;border:0;background:none;text-align:left;padding:12px 14px;border-radius:12px;color:#C7D0F0;font-weight:500;transition:background .25s var(--ease),color .25s,box-shadow .25s,transform .2s}
+nav button:hover{background:rgba(255,255,255,.06);transform:translateX(2px)}
+nav button[aria-current="page"]{background:linear-gradient(90deg,#2A4FD8,#4B3DD8);color:#fff;font-weight:700;box-shadow:0 6px 20px rgba(60,80,255,.3);transform:none}
+.user{margin-top:auto;border-top:1px solid var(--line);padding:16px 8px 0;display:flex;align-items:center;gap:12px}
+.av{width:42px;height:42px;border-radius:50%;background:linear-gradient(135deg,var(--blue),var(--vio));display:grid;place-items:center;font-weight:700}
+.user small{display:block;color:var(--mute);font-size:12px}
+.user b{font-weight:600}
+main{min-width:0}
+.topbar{display:flex;gap:10px;align-items:center;justify-content:flex-end;margin-bottom:6px}
+.search{display:flex;align-items:center;gap:10px;padding:9px 14px;border-radius:12px;color:var(--mute);width:min(100%,320px);transition:border-color .2s,opacity .2s}
+.search input{background:none;border:0;outline:0;width:100%;color:var(--ink)}
+.search:focus-within{border-color:var(--cy)}
+.search:has(input:disabled){opacity:.45}
+.ib{width:40px;height:40px;border-radius:12px;border:0;background:none;display:grid;place-items:center;position:relative;color:#DDE4FF;transition:background .2s}
+.ib:hover{background:rgba(255,255,255,.07)}
+.ib.n::after{content:"";position:absolute;top:8px;right:9px;width:8px;height:8px;border-radius:50%;background:#FF4B4B}
+.foot{margin:36px 0 0;padding:14px 18px;text-align:center;color:#C7D0F0;font-size:13px;font-weight:500;border-radius:14px}
+.top{display:flex;justify-content:space-between;gap:20px;align-items:flex-start;flex-wrap:wrap;margin:10px 0 24px}
+h1{font-size:clamp(28px,4vw,40px);line-height:1.1;letter-spacing:-.03em;font-weight:800;margin:6px 0 8px}
+.sub{color:var(--mute);margin:0;max-width:36em}
+/* transições entre abas */
+#view{min-height:60vh;transition:opacity .15s ease,transform .15s ease}
+#view.leaving{opacity:0;transform:translateY(-6px)}
+@keyframes up{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+#view.enter>*{animation:up .42s var(--ease) both}
+#view.enter>*:nth-child(2){animation-delay:.05s}#view.enter>*:nth-child(3){animation-delay:.1s}
+#view.enter>*:nth-child(4){animation-delay:.15s}#view.enter>*:nth-child(5){animation-delay:.2s}
+#view.enter .stag>*{animation:up .45s var(--ease) both;animation-delay:calc(var(--i,0)*55ms + 80ms)}
+.stag>*:nth-child(1){--i:0}.stag>*:nth-child(2){--i:1}.stag>*:nth-child(3){--i:2}.stag>*:nth-child(4){--i:3}.stag>*:nth-child(5){--i:4}.stag>*:nth-child(6){--i:5}
+@media (max-width:900px){
+ .app{grid-template-columns:1fr;gap:12px;padding:12px}
+ .side{position:static;height:auto;padding:14px}
+ .brand{padding-bottom:12px}
+ nav{flex-direction:row;overflow-x:auto;padding-bottom:4px}
+ nav button{white-space:nowrap;padding:10px 14px}
+ .user{display:none}
+ .search{width:100%;flex:1}
+}
+
+</style>
+<style>
+.glass{background:var(--glass);border:1px solid var(--line);border-radius:20px;backdrop-filter:blur(14px)}
+.btn{display:flex;gap:8px;align-items:center;justify-content:center;width:100%;border-radius:10px;padding:10px 14px;font-weight:700;font-size:14px;border:1px solid var(--cy);background:rgba(95,230,245,.04);color:var(--cy);transition:background .2s,transform .15s,opacity .2s}
+.btn:hover{background:rgba(95,230,245,.13)}
+.btn:active{transform:scale(.98)}
+.btn.pri{border:0;color:#fff;background:linear-gradient(90deg,#2F8BFF,#3D6BFF)}
+.btn.pri:hover{filter:brightness(1.1)}
+.btn.vio{border:0;color:#fff;background:linear-gradient(90deg,#3F4FD8,#7A55F0)}
+.btn.off{border-color:var(--line);color:#C7D0F0;background:none}
+.btn.dng{border:0;color:#fff;background:linear-gradient(90deg,#D6453A,#B3302F)}
+.btn.fit{width:auto}
+.btn.sm{padding:6px 12px;font-size:13px;width:auto}
+.btn:disabled{opacity:.55;cursor:default}
+.pill{display:inline-block;font-size:12px;font-weight:700;padding:3px 11px;border-radius:99px;color:#fff;background:linear-gradient(135deg,#C98A2E,#A66A1C);white-space:nowrap}
+.pill.on,.pill.ok{background:linear-gradient(135deg,#1FA971,#0E8A5A)}
+.pill.warn{background:linear-gradient(135deg,#C98A2E,#A66A1C)}
+.pill.bad{background:linear-gradient(135deg,#D6453A,#A82B2B)}
+.pill.info{background:linear-gradient(135deg,#2F7BFF,#4B3DD8)}
+.pill.mut{background:rgba(255,255,255,.12);color:#C7D0F0}
+.fld{display:flex;align-items:center;border:1px solid var(--line);background:rgba(255,255,255,.04);border-radius:9px;padding:0 10px;transition:border-color .2s}
+.fld input{flex:1;min-width:0;background:none;border:0;outline:0;padding:9px 0;font-size:13.5px}
+.fld input::placeholder{color:#8F9BC4}
+.fld:focus-within{border-color:var(--cy)}
+.fld.err{border-color:#FF6B6B}
+.dot{width:10px;height:10px;border-radius:50%;display:inline-block}
+.dot.ml,.bar .ml,.bg-ml{background:var(--ml)}.dot.tt,.bar .tt,.bg-tt{background:var(--tt)}.dot.sp,.bar .sp,.bg-sp{background:var(--sp)}
+.chips{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px}
+.chip{display:inline-flex;align-items:center;gap:7px;border:1px solid var(--line);background:none;border-radius:99px;padding:5px 12px;font-size:13px;font-weight:500;color:#C7D0F0;transition:border-color .2s,background .2s}
+.chip:hover{background:rgba(255,255,255,.06)}
+.chip[aria-pressed="true"]{border-color:var(--cy);color:#fff;font-weight:700}
+.seg{display:inline-flex;border:1px solid var(--line);border-radius:10px;overflow:hidden}
+.seg button{border:0;background:none;padding:7px 13px;font-weight:600;font-size:13px;color:var(--mute);transition:background .25s,color .25s}
+.seg button[aria-pressed="true"]{background:linear-gradient(90deg,#2A4FD8,#4B3DD8);color:#fff}
+.sw{width:44px;height:26px;border-radius:99px;border:1px solid var(--line);background:rgba(255,255,255,.1);position:relative;flex:none;transition:background .25s}
+.sw::after{content:"";position:absolute;top:2px;left:2px;width:20px;height:20px;border-radius:50%;background:#fff;transition:transform .25s var(--ease)}
+.sw[aria-checked="true"]{background:linear-gradient(90deg,#2F8BFF,#6B4DFF);border-color:transparent}
+.sw[aria-checked="true"]::after{transform:translateX(18px)}
+.f{display:flex;flex-direction:column;gap:5px;font-size:13px;font-weight:600;margin-bottom:12px}
+.f input,.f select,.f textarea{background:rgba(255,255,255,.05);border:1px solid var(--line);border-radius:9px;padding:9px 11px;font-weight:400;outline:0;transition:border-color .2s}
+.f input:focus,.f select:focus,.f textarea:focus{border-color:var(--cy)}
+.f select option{background:#10173A}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+dialog{border:1px solid var(--line);border-radius:18px;background:#10173A;color:var(--ink);width:min(440px,calc(100vw - 32px));padding:24px}
+dialog[open]{animation:pop .25s var(--ease)}
+dialog::backdrop{background:rgba(3,6,20,.7)}
+@keyframes pop{from{opacity:0;transform:translateY(10px) scale(.97)}to{opacity:1;transform:none}}
+dialog h3{font-size:20px;margin-bottom:12px}
+dialog p{color:var(--mute);margin:0 0 16px}
+dialog .acts{display:flex;gap:10px;margin-top:6px}
+#toasts{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);display:flex;flex-direction:column;gap:8px;align-items:center;z-index:50;pointer-events:none}
+.toast{background:#1B2557;border:1px solid var(--line);padding:10px 18px;border-radius:12px;font-weight:600;font-size:14px;animation:pop .3s var(--ease);transition:opacity .35s,transform .35s}
+.toast.out{opacity:0;transform:translateY(8px)}
+.popwrap{position:relative}
+.pop{position:absolute;right:0;top:48px;width:min(320px,calc(100vw - 32px));padding:14px;background:#10173A;z-index:20;animation:pop .22s var(--ease)}
+.pop h4{font-size:15px;margin-bottom:8px}
+.pop button{display:block;width:100%;text-align:left;border:0;background:none;padding:10px;border-radius:10px;font-size:14px}
+.pop button:hover{background:rgba(255,255,255,.07)}
+.pad{padding:8px 10px;margin:0}
+.tw{overflow-x:auto;padding:6px 8px}
+table{width:100%;border-collapse:collapse;font-size:14px}
+th,td{padding:12px 10px;text-align:left;border-bottom:1px solid var(--line);vertical-align:middle}
+tr:last-child td{border-bottom:0}
+th{font-size:13px;color:var(--mute);font-weight:600;white-space:nowrap}
+tbody tr{transition:background .2s}
+tbody tr:hover{background:rgba(255,255,255,.04)}
+.sortb{border:0;background:none;color:inherit;font-weight:inherit;padding:0}
+.sortb:hover{color:var(--ink)}
+.empty{padding:34px 20px;text-align:center;color:var(--mute)}
+.empty .btn{margin:14px auto 0;width:auto;padding:9px 20px}
+.note{color:var(--mute);font-size:13px;margin:12px 0 0}
+
+</style>
+<style>
+/* Integrações */
+.how{padding:16px 18px;background:linear-gradient(135deg,rgba(95,230,245,.2),rgba(60,100,255,.18));border-color:rgba(95,230,245,.35);width:min(100%,370px)}
+.how h3{margin:0 0 6px;color:var(--cy);font-size:17px;display:flex;gap:8px;align-items:center}
+.how ol{margin:0;padding-left:20px;font-size:13.5px;font-weight:600;line-height:1.7}
+.how li::marker{color:var(--cy)}
+.sec{display:flex;align-items:center;gap:12px;margin:28px 0 14px}
+.sec h2{font-size:22px;font-weight:800}
+.cnt{font-size:12.5px;font-weight:600;padding:4px 12px;border-radius:99px;background:rgba(107,77,255,.35);border:1px solid rgba(160,140,255,.4)}
+.cards{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:20px}
+@media (max-width:1100px){.cards{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:620px){.cards{grid-template-columns:1fr}}
+.card{padding:18px;display:flex;flex-direction:column;gap:6px;transition:transform .25s var(--ease),border-color .25s}
+.card:hover{transform:translateY(-3px);border-color:rgba(95,230,245,.35)}
+.ch{display:flex;justify-content:space-between;align-items:center;gap:8px;min-height:44px}
+.card h3{margin:8px 0 0;font-size:18px;font-weight:700}
+.card p{margin:0 0 6px;font-size:13px;color:#C2CBEA;min-height:38px}
+.card label{font-size:12.5px;font-weight:600}
+.msg{font-size:12.5px;color:var(--down);min-height:18px;margin:0!important;min-height:18px!important}
+.lg{display:inline-flex;align-items:center;gap:8px;font-weight:700;font-size:18px;letter-spacing:-.02em}
+.lg i{font-style:normal;display:grid;place-items:center;width:30px;height:30px;border-radius:8px;font-weight:800;font-size:16px}
+.lg.ml{background:var(--ml);color:#2D2A00;padding:8px 14px;border-radius:12px;font-size:16px}
+.lg.sp{color:var(--sp)}.lg.sp i{background:var(--sp);color:#fff}
+.lg.tt i{background:#000;color:#fff;border:1px solid #333}
+.lg.cj{color:#A9A4FF}.lg.cj i{background:linear-gradient(135deg,var(--cy),var(--vio));color:#fff}
+.lg.hy{color:#38D6C8}.lg.hy i{background:#16A89E;color:#fff}
+.lg.ab{color:#5FD38A}.lg.ab i{background:#2E9E5B;color:#fff}
+/* Dashboard */
+.lead{font-size:clamp(24px,3.6vw,36px);font-weight:800;letter-spacing:-.03em;line-height:1.12;margin:0 0 18px;max-width:22em}
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:14px;margin-bottom:22px}
+.kpi{padding:14px 16px}
+.kpi small{display:block;color:var(--mute);font-size:13px}
+.kpi b{font-size:23px;font-weight:800;letter-spacing:-.02em}
+.kpi i{font-style:normal;font-size:13px;font-weight:700;margin-left:6px}
+.dgrid{display:grid;grid-template-columns:minmax(0,1.7fr) minmax(0,1fr);gap:20px;align-items:start}
+@media (max-width:1100px){.dgrid{grid-template-columns:1fr}}
+.pan{padding:20px}
+.pan+.pan{margin-top:20px}
+.row-h{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:14px}
+.row-h h2{font-size:22px;font-weight:800}
+ol.rank{list-style:none;margin:0;padding:0}
+ol.rank li{display:grid;grid-template-columns:34px minmax(0,1fr) auto;gap:4px 12px;padding:13px 10px;border-top:1px solid var(--line);align-items:center}
+ol.rank li.me{background:rgba(60,100,255,.16);border-radius:12px;border-top-color:transparent}
+ol.rank li.empty{display:block}
+.rk{font-size:22px;font-weight:800;color:var(--mute);text-align:right}
+li:nth-child(-n+3)>.rk{color:var(--cy)}
+.nm{font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.st{color:var(--mute);font-size:13px}
+.tag{font-size:11px;font-weight:700;background:linear-gradient(90deg,#2F8BFF,#6B4DFF);border-radius:5px;padding:1px 7px;margin-left:6px}
+.bar{grid-column:2;display:flex;height:7px;border-radius:4px;overflow:hidden;background:rgba(255,255,255,.08)}
+.fig{grid-column:3;grid-row:1/3;text-align:right;font-variant-numeric:tabular-nums}
+.fig b{display:block}
+.fig span{font-size:13px;font-weight:700}
+svg text{fill:var(--mute);font:11.5px 'Plus Jakarta Sans',sans-serif}
+.legend{display:flex;gap:14px;flex-wrap:wrap;font-size:13px;color:var(--mute);margin-top:6px}
+.legend span{display:inline-flex;gap:6px;align-items:center}
+/* Análises */
+.ana{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:20px}
+.ana .wide{grid-column:1/-1}
+@media (max-width:900px){.ana{grid-template-columns:1fr}}
+.hb{display:grid;grid-template-columns:110px 1fr auto;gap:10px;align-items:center;padding:8px 0;font-size:14px}
+.hb .tr{height:10px;border-radius:5px;background:rgba(255,255,255,.08);overflow:hidden}
+.hb .tr i{display:block;height:100%;border-radius:5px;transition:width .8s var(--ease)}
+.hb b{font-variant-numeric:tabular-nums}
+.bg-cat{background:linear-gradient(90deg,var(--blue),var(--vio))}
+/* Pedidos */
+.ord{display:grid;grid-template-columns:minmax(0,1.4fr) minmax(0,1.2fr) auto auto;gap:10px 16px;align-items:center;padding:14px 18px;border-top:1px solid var(--line)}
+.ord:first-child{border-top:0}
+.ord .id{font-weight:700}
+.ord .acts{display:flex;gap:8px;justify-content:flex-end}
+@media (max-width:760px){.ord{grid-template-columns:1fr auto}.ord .acts{grid-column:1/-1;justify-content:flex-start}}
+/* Produtos */
+.stk{width:76px;background:rgba(255,255,255,.05);border:1px solid var(--line);border-radius:8px;padding:6px 8px;outline:0}
+.stk:focus{border-color:var(--cy)}
+.row-acts{display:flex;gap:6px}
+/* Automações / Equipe / Config / Ajuda */
+.rule{display:flex;justify-content:space-between;align-items:center;gap:16px;padding:16px 20px;border-top:1px solid var(--line)}
+.rule:first-child{border-top:0}
+.rule b{display:block}
+.rule span{color:var(--mute);font-size:13.5px}
+.log{list-style:none;margin:0;padding:0;font-size:14px}
+.log li{padding:8px 0;border-top:1px solid var(--line);color:#C7D0F0}
+.log li:first-child{border-top:0}
+.log time{color:var(--mute);margin-right:10px;font-size:13px}
+.tgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:16px}
+.mem{padding:18px;display:flex;flex-direction:column;gap:10px;transition:transform .25s var(--ease)}
+.mem:hover{transform:translateY(-3px)}
+.mem .hd{display:flex;gap:12px;align-items:center}
+.mem select{background:rgba(255,255,255,.05);border:1px solid var(--line);border-radius:9px;padding:7px 10px}
+.mem select option{background:#10173A}
+.form{padding:22px;max-width:560px}
+.chk{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:16px;font-weight:600;font-size:14px}
+.danger{margin-top:20px;max-width:560px;padding:20px;border-color:rgba(255,107,107,.35)}
+.faq{padding:0 20px;margin-bottom:20px}
+.qa{border-top:1px solid var(--line)}
+.qa:first-child{border-top:0}
+.qa>button{width:100%;display:flex;justify-content:space-between;gap:12px;align-items:center;background:none;border:0;padding:16px 0;font-weight:600;text-align:left}
+.qa>button svg{transition:transform .3s var(--ease)}
+.qa[data-open="1"]>button svg{transform:rotate(180deg)}
+.ans{display:grid;grid-template-rows:0fr;transition:grid-template-rows .35s var(--ease)}
+.ans>div{overflow:hidden;color:#C2CBEA}
+.ans>div>p{margin:0 0 16px}
+.qa[data-open="1"] .ans{grid-template-rows:1fr}
+
+</style>
+<style>
+.auth{min-height:100vh;display:grid;place-items:center;padding:20px}
+.authcard{width:min(440px,100%);padding:30px;animation:pop .45s var(--ease)}
+.authcard .brand{padding:0 0 22px;justify-content:center}
+.authseg{display:flex;margin-bottom:22px}
+.authseg button{flex:1;padding:9px 13px;font-size:14px}
+.authcard h1{font-size:28px;margin:0 0 4px;text-align:center}
+.authcard .sub{text-align:center;margin:0 auto 22px}
+.ex{display:grid;grid-template-rows:0fr;opacity:0;visibility:hidden;transition:grid-template-rows .38s var(--ease),opacity .3s,visibility 0s .38s}
+.ex>div{overflow:hidden}
+#aForm[data-mode="up"] .ex{grid-template-rows:1fr;opacity:1;visibility:visible;transition-delay:0s}
+.pw{display:flex;align-items:center;background:rgba(255,255,255,.05);border:1px solid var(--line);border-radius:9px;transition:border-color .2s}
+.pw:focus-within{border-color:var(--cy)}
+.f .pw input{flex:1;border:0;background:none;border-radius:0}
+.pw button{border:0;background:none;color:var(--mute);padding:0 12px;height:38px;display:grid;place-items:center}
+.pw button:hover,.pw button[aria-pressed="true"]{color:var(--cy)}
+.meter{display:grid;grid-template-columns:repeat(4,1fr);gap:5px;margin:-4px 0 4px}
+.meter i{height:5px;border-radius:3px;background:rgba(255,255,255,.1);transition:background .3s}
+.meter[data-s="1"] i:nth-child(-n+1){background:#E5534B}
+.meter[data-s="2"] i:nth-child(-n+2){background:var(--warn)}
+.meter[data-s="3"] i:nth-child(-n+3){background:#9BD45F}
+.meter[data-s="4"] i{background:var(--up)}
+.mt{font-size:12.5px;color:var(--mute);min-height:20px;margin:0 0 12px}
+.keep{display:flex;align-items:center;gap:9px;font-size:14px;margin:2px 0 14px;color:#C7D0F0}
+.keep input{accent-color:#3D6BFF;width:16px;height:16px}
+.aerr{color:var(--down);font-size:13.5px;min-height:22px;margin:0 0 8px}
+.authcard .note{text-align:center;margin-top:16px}
+.user .ib{margin-left:auto;width:36px;height:36px}
+
+</style>
+</head>
+<body>
+<div class="app hide" id="app">
+  <aside class="glass side">
+    <div class="brand"><span class="mark">F</span><span>Fourncy<b>.ia</b></span></div>
+    <nav id="nav" aria-label="Menu principal"></nav>
+    <div class="user"><span class="av" id="uAv"></span><div style="min-width:0"><b id="uName"></b><small>Plano Premium</small></div><button class="ib" data-logout aria-label="Sair da conta" title="Sair"><svg class="i" viewBox="0 0 24 24"><path d="M10 4H5v16h5M15 8l4 4-4 4M19 12H9"/></svg></button></div>
+  </aside>
+  <main>
+    <div class="topbar">
+      <label class="glass search"><svg class="i" viewBox="0 0 24 24"><circle cx="11" cy="11" r="6.5"/><path d="M16 16l4 4"/></svg><input id="q" type="search" placeholder="Buscar..." aria-label="Buscar"></label>
+      <div class="popwrap">
+        <button class="ib" id="bell" aria-label="Notificações" aria-expanded="false"><svg class="i" viewBox="0 0 24 24"><path d="M6 17V11a6 6 0 1112 0v6l1.5 2h-15zM10 21h4"/></svg></button>
+        <div class="glass pop hide" id="pop"><h4>Notificações</h4><div id="popl"></div></div>
+      </div>
+      <button class="ib" data-go="cfg" aria-label="Configurações"><svg class="i" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M12 3v3M12 18v3M3 12h3M18 12h3M5.6 5.6l2.1 2.1M16.3 16.3l2.1 2.1M18.4 5.6l-2.1 2.1M7.7 16.3l-2.1 2.1"/></svg></button>
+    </div>
+    <div id="view" tabindex="-1"></div>
+    <div class="glass foot">Todas as conexões utilizam criptografia AES-256 • Suas chaves ficam seguras e podem ser removidas a qualquer momento</div>
+  </main>
+</div>
+<div class="auth hide" id="auth"><div class="glass authcard">
+  <div class="brand"><span class="mark">F</span><span>Fourncy<b>.ia</b></span></div>
+  <div class="seg authseg" role="group" aria-label="Entrar ou criar conta"><button data-mode-btn="in" aria-pressed="true">Entrar</button><button data-mode-btn="up" aria-pressed="false">Criar conta</button></div>
+  <h1 id="aT"></h1><p class="sub" id="aS"></p>
+  <form id="aForm" data-mode="in" novalidate>
+    <div class="ex"><div><label class="f">Seu nome<input name="name" autocomplete="name" maxlength="40"></label></div></div>
+    <label class="f">E-mail<input name="email" type="email" autocomplete="username" maxlength="80"></label>
+    <label class="f">Senha<span class="pw"><input name="pw" type="password" autocomplete="current-password" maxlength="100"><button type="button" data-eye aria-label="Mostrar senha" aria-pressed="false"><svg class="i" viewBox="0 0 24 24"><path d="M2 12s3.5-6.5 10-6.5S22 12 22 12s-3.5 6.5-10 6.5S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg></button></span></label>
+    <div class="ex"><div><div class="meter" id="aMeter" data-s="0"><i></i><i></i><i></i><i></i></div><p class="mt" id="aMeterT"></p>
+      <label class="f">Confirmar senha<input name="pw2" type="password" autocomplete="new-password" maxlength="100"></label></div></div>
+    <label class="keep"><input type="checkbox" name="keep"> Manter conectado neste navegador</label>
+    <p class="aerr" id="aErr" role="alert"></p>
+    <button class="btn pri" id="aGo">Entrar</button>
+  </form>
+  <p class="note">Modo demonstração: as contas ficam salvas só neste navegador, e a senha é guardada como hash com salt.</p>
+</div></div>
+<div id="toasts" aria-live="polite"></div>
+<dialog id="dlg"></dialog>
+
+<script>
+window.Hub={views:{},state:null};
+(function(H){
+H.KEYS=['ml','tt','sp'];
+H.CHN={ml:'Mercado Livre',tt:'TikTok Shop',sp:'Shopee'};
+H.brl=n=>n.toLocaleString('pt-BR',{style:'currency',currency:'BRL',maximumFractionDigits:0});
+H.brl2=n=>n.toLocaleString('pt-BR',{style:'currency',currency:'BRL'});
+H.num=n=>n.toLocaleString('pt-BR');
+H.pct=(a,b)=>b?Math.round((a-b)/b*100):0;
+H.esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+H.days=Array.from({length:7},(_,i)=>{const d=new Date();d.setDate(d.getDate()-6+i);return d});
+H.fd=(d,o)=>new Date(d).toLocaleDateString('pt-BR',o);
+
+/* dados de exemplo: nome, preço, base semanal, pesos ml/tt/sp, categoria, estoque */
+const MINE=[
+['Vela aromática lavanda 300g',49.9,210,.5,.3,.2,'Decoração',64],
+['Kit organizador de gavetas (6 peças)',39.9,330,.6,0,.4,'Organização',120],
+['Garrafa térmica 1L inox',89,150,.4,.4,.2,'Cozinha',9],
+['Luminária LED de mesa',119,95,.7,.1,.2,'Decoração',31],
+['Jogo de toalhas 4 peças',139,70,.5,0,.5,'Banho',0],
+['Difusor de ambiente com varetas',64.9,185,.3,.5,.2,'Decoração',47],
+['Porta-temperos giratório',74,60,.8,0,.2,'Cozinha',22],
+['Tapete antiderrapante para banheiro',34.9,260,.4,.1,.5,'Banho',88],
+['Manta de sofá microfibra',99,88,.6,.1,.3,'Decoração',12],
+['Relógio de parede minimalista',79,52,.5,.2,.3,'Decoração',27]];
+const OTHERS=[
+['Fone Bluetooth sem fio TWS','Tech Nova',129,620,.3,.4,.3],['Carregador turbo 65W USB-C','Tech Nova',89.9,540,.5,.2,.3],['Suporte veicular para celular','Tech Nova',44.9,410,.4,.2,.4],
+['Sérum vitamina C 30ml','Bela Pele',69.9,480,.2,.6,.2],['Protetor solar FPS 60','Bela Pele',54.9,590,.4,.3,.3],['Kit de pincéis de maquiagem','Bela Pele',59,300,.2,.5,.3],
+['Tapete higiênico para cães (30 un.)','Pet Alegre',79.9,360,.6,0,.4],['Brinquedo mordedor resistente','Pet Alegre',29.9,270,.3,.3,.4],
+['Garrafa shaker 700ml','Fit Mania',34.9,350,.3,.3,.4],['Kit faixas elásticas (5 níveis)','Fit Mania',49.9,225,.4,.2,.4],
+['Camiseta oversized algodão','Moda Sol',69.9,700,.2,.5,.3],['Legging cintura alta','Moda Sol',84.9,455,.2,.5,.3],['Mochila infantil escolar','Kids Land',119,175,.5,.1,.4]];
+let sd=42;const R=()=>(sd=sd*16807%2147483647)/2147483647;
+const build=(id,n,st,p,b,w,x)=>{
+  const u={},pv={};
+  H.KEYS.forEach((k,i)=>{u[k]=Math.round(b*w[i]*(.8+R()*.4));pv[k]=Math.round(u[k]*(.72+R()*.55))});
+  let d=Array.from({length:7},()=>.6+R()*.8);const t=d.reduce((a,c)=>a+c,0);
+  return Object.assign({id,n,st,p,u,pv,d:d.map(v=>v/t)},x);
+};
+H.base=MINE.map((m,i)=>build('m'+i,m[0],'',m[1],m[2],m.slice(3,6),{mine:true,cat:m[6],stock:m[7],sku:'CA-'+(100+i)}))
+  .concat(OTHERS.map((o,i)=>build('o'+i,o[0],o[1],o[2],o[3],o.slice(4,7),{mine:false})));
+
+const NM=['Ana Souza','Bruno Lima','Carla Mendes','Diego Rocha','Elisa Prado','Fábio Nunes','Gabriela Dias','Henrique Alves','Isabela Torres','João Pedro','Karina Melo','Lucas Freitas'];
+H.orders=Array.from({length:34},(_,i)=>{
+  const p=H.base[Math.floor(R()*10)];
+  const ks=H.KEYS.filter(k=>p.u[k]>0);
+  const ch=ks[Math.floor(R()*ks.length)];
+  const r=R();
+  const d=new Date(H.days[Math.floor(R()*7)]);d.setHours(8+Math.floor(R()*12),Math.floor(R()*60));
+  return{id:'FN-'+(1040+i),cust:NM[Math.floor(R()*NM.length)],pid:p.id,n:p.n,qty:1+Math.floor(R()*3),price:p.p,ch,t:d.getTime(),
+    s:r<.15?'Pendente':r<.4?'Pago':r<.7?'Enviado':'Entregue'};
+}).sort((a,b)=>b.t-a.t);
+})(Hub);
+
+</script>
+<script>
+(function(H){
+const keyOf=()=>'fourncy-hub-v4:'+H.uid;
+const def=(name,email)=>({
+  conn:{ml:false,sp:false,tt:false,cj:false,hy:false,ab:false},
+  extra:[],del:[],ed:{},os:{},
+  auto:{lowstock:true,pause:false,sync:true,reply:false,report:false},
+  log:[],
+  set:{user:name,store:'Minha loja',min:15,mail:true},
+  team:[{id:'t1',n:name,e:email,r:'Proprietário'}]
+});
+/* chamado após o login: carrega (ou cria) o estado da conta */
+H.loadState=acct=>{
+  H.uid=acct.email;H.email=acct.email;
+  const d=def(acct.name,acct.email);
+  H.state=Object.assign(def(acct.name,acct.email),{q:'',scope:'mine',ch:'all',sort:{k:'sales',d:-1},pfil:'all',ofil:'all',ocan:'all',cur:'int'});
+  try{
+    const v=JSON.parse(localStorage.getItem(keyOf())||'null');
+    if(v)for(const k in d)if(k in v)H.state[k]=(d[k]&&typeof d[k]==='object'&&!Array.isArray(d[k]))?Object.assign(H.state[k],v[k]):v[k];
+  }catch(e){}
+};
+H.save=()=>{try{
+  const s=H.state,keep={conn:s.conn,extra:s.extra,del:s.del,ed:s.ed,os:s.os,auto:s.auto,log:s.log,set:s.set,team:s.team};
+  localStorage.setItem(keyOf(),JSON.stringify(keep));
+}catch(e){}};
+H.reset=()=>{try{localStorage.removeItem(keyOf())}catch(e){}location.reload()};
+
+H.active=()=>H.KEYS.filter(k=>H.state.conn[k]);
+H.storeName=()=>H.state.set.store;
+H.products=()=>{
+  const s=H.state,z={ml:0,tt:0,sp:0};
+  const extra=s.extra.map(x=>Object.assign({mine:true,st:'',u:z,pv:z,d:[1/7,1/7,1/7,1/7,1/7,1/7,1/7]},x));
+  return H.base.concat(extra).filter(p=>!s.del.includes(p.id)).map(p=>s.ed[p.id]?Object.assign({},p,s.ed[p.id]):p);
+};
+H.ranked=(scope,filter)=>{
+  let keys=filter==='all'?H.KEYS:[filter];
+  if(scope==='mine')keys=keys.filter(k=>H.state.conn[k]);
+  const sum=(p,pr)=>keys.reduce((a,k)=>a+(pr?p.pv[k]:p.u[k]),0);
+  return H.products().filter(p=>scope==='all'||p.mine).map(p=>({p,units:sum(p,0),prev:sum(p,1),keys}))
+    .filter(r=>r.units>0).sort((a,b)=>b.units-a.units);
+};
+H.orderList=()=>H.orders.filter(o=>H.state.conn[o.ch]).map(o=>Object.assign({},o,{s:H.state.os[o.id]||o.s}));
+H.lowStock=()=>H.products().filter(p=>p.mine&&p.stock<=+H.state.set.min);
+H.alerts=()=>{
+  const a=[],s=H.state;
+  if(!H.active().length)a.push({m:'Conecte um marketplace para sincronizar suas vendas.',go:'int'});
+  if(s.auto.lowstock){const n=H.lowStock().length;if(n)a.push({m:`${n} produto${n>1?'s':''} com estoque baixo.`,go:'prod'})}
+  const pend=H.orderList().filter(o=>o.s==='Pendente').length;
+  if(pend)a.push({m:`${pend} pedido${pend>1?'s':''} aguardando pagamento.`,go:'ped'});
+  return a;
+};
+})(Hub);
+
+</script>
+<script>
+(function(H){
+H.$=(s,r=document)=>r.querySelector(s);
+H.$$=(s,r=document)=>[...r.querySelectorAll(s)];
+H.ico=d=>`<svg class="i" viewBox="0 0 24 24"><path d="${d}"/></svg>`;
+H.head=(title,sub,extra='')=>`<div class="top"><div><h1>${title}</h1><p class="sub">${sub}</p></div>${extra}</div>`;
+H.empty=(msg,cta)=>`<div class="empty">${msg}${cta?`<br><button class="btn pri" data-go="${cta[0]}">${cta[1]}</button>`:''}</div>`;
+H.toast=m=>{
+  const t=document.createElement('div');t.className='toast';t.textContent=m;H.$('#toasts').append(t);
+  setTimeout(()=>t.classList.add('out'),2600);setTimeout(()=>t.remove(),3000);
+};
+H.modal=({title,body='',ok='Salvar',danger=false,onOk})=>{
+  const d=H.$('#dlg');
+  d.innerHTML=`<form><h3>${title}</h3>${body}<div class="acts"><button type="button" class="btn off" data-x>Cancelar</button><button class="btn ${danger?'dng':'pri'}">${ok}</button></div></form>`;
+  const f=d.firstChild;
+  f.onsubmit=e=>{e.preventDefault();if(onOk(new FormData(f))!==false)d.close()};
+  f.querySelector('[data-x]').onclick=()=>d.close();
+  d.onclick=e=>{if(e.target===d)d.close()};
+  d.showModal();
+  const i=f.querySelector('input,select,textarea');if(i)i.focus();
+};
+H.sw=(on,attrs)=>`<button type="button" class="sw" role="switch" aria-checked="${on}" ${attrs}></button>`;
+})(Hub);
+
+</script>
+<script>
+(function(H){
+const UK='fourncy-accounts',SK='fourncy-session',enc=new TextEncoder();
+const b64=a=>btoa(String.fromCharCode(...a)),unb=s=>Uint8Array.from(atob(s),c=>c.charCodeAt(0));
+const read=()=>{try{return JSON.parse(localStorage.getItem(UK)||'{}')}catch(e){return{}}};
+const write=u=>{try{localStorage.setItem(UK,JSON.stringify(u));return true}catch(e){return false}};
+const norm=e=>e.trim().toLowerCase();
+async function derive(pw,salt){
+  if(!(globalThis.crypto&&crypto.subtle))throw new Error('nocrypto');
+  const k=await crypto.subtle.importKey('raw',enc.encode(pw),'PBKDF2',false,['deriveBits']);
+  return b64(new Uint8Array(await crypto.subtle.deriveBits({name:'PBKDF2',salt,iterations:150000,hash:'SHA-256'},k,256)));
+}
+H.auth={
+  async create(name,email,pw){
+    email=norm(email);const u=read();
+    if(u[email])return{err:'Já existe uma conta com este e-mail.'};
+    const salt=crypto.getRandomValues(new Uint8Array(16));
+    u[email]={name:name.trim(),salt:b64(salt),hash:await derive(pw,salt)};
+    if(!write(u))return{err:'Não foi possível salvar a conta neste navegador.'};
+    return{acct:{email,name:u[email].name}};
+  },
+  async login(email,pw){
+    email=norm(email);const a=read()[email];
+    const h=await derive(pw,a?unb(a.salt):new Uint8Array(16));
+    if(!a||h!==a.hash)return{err:'E-mail ou senha incorretos.'};
+    return{acct:{email,name:a.name}};
+  },
+  session(email,remember){try{sessionStorage.removeItem(SK);localStorage.removeItem(SK);(remember?localStorage:sessionStorage).setItem(SK,email)}catch(e){}},
+  current(){try{const e=sessionStorage.getItem(SK)||localStorage.getItem(SK),a=e&&read()[e];return a?{email:e,name:a.name}:null}catch(e){return null}},
+  logout(){try{sessionStorage.removeItem(SK);localStorage.removeItem(SK)}catch(e){}location.hash='';location.reload()},
+  rename(email,name){const u=read();if(u[email]){u[email].name=name;write(u)}}
+};
+})(Hub);
+
+</script>
+<script>
+(function(H){
+const {esc,brl,num,pct,CHN,KEYS,days,fd}=H;
+function chart(){
+  const keys=H.active(),W=320,base=140,top=14,bw=28,gap=(W-7*bw)/8;
+  if(!keys.length)return `<text x="160" y="85" text-anchor="middle">Nenhum canal conectado</text>`;
+  const mp=H.products().filter(p=>p.mine);
+  const data=days.map((_,i)=>{const o={};keys.forEach(k=>o[k]=mp.reduce((a,p)=>a+p.u[k]*p.p*p.d[i],0));o.t=keys.reduce((a,k)=>a+o[k],0);return o});
+  const mx=Math.max(1,...data.map(d=>d.t));let h='';
+  data.forEach((d,i)=>{
+    let y=base;const x=gap+i*(bw+gap);
+    keys.forEach(k=>{const hh=d[k]/mx*(base-top);y-=hh;h+=`<rect x="${x}" y="${y}" width="${bw}" height="${Math.max(hh,0)}" fill="var(--${k})"><title>${CHN[k]}: ${brl(d[k])}</title></rect>`});
+    h+=`<text x="${x+bw/2}" y="${base+16}" text-anchor="middle">${fd(days[i],{weekday:'short'}).replace('.','')}</text>`;
+    if(d.t)h+=`<text x="${x+bw/2}" y="${y-4}" text-anchor="middle">${(d.t/1000).toFixed(1).replace('.',',')}k</text>`;
+  });
+  return h+`<line x1="0" x2="${W}" y1="${base}" y2="${base}" stroke="rgba(160,180,255,.25)"/>`;
+}
+H.views.dash={
+  render(){
+    const s=H.state,act=H.active(),mine=H.ranked('mine','all');
+    const rev=mine.reduce((a,r)=>a+r.units*r.p.p,0),prev=mine.reduce((a,r)=>a+r.prev*r.p.p,0);
+    const u=mine.reduce((a,r)=>a+r.units,0),pu=mine.reduce((a,r)=>a+r.prev,0);
+    const o=Math.round(u/1.34),po=Math.round(pu/1.34),dl=pct(rev,prev);
+    const k=(l,v,a,b)=>`<div class="glass kpi"><small>${l}</small><b>${v}</b><i class="${a>=b?'up':'down'}">${a>=b?'+':'−'}${Math.abs(pct(a,b))}%</i></div>`;
+    const all=H.ranked(s.scope,s.ch),rows=all.slice(0,10),max=rows.length?rows[0].units:1;
+    const mineName=esc(H.storeName());
+    let list,ins='';
+    if(!rows.length){
+      list=`<li class="empty">${s.scope==='mine'?(act.length?'Sem vendas neste canal nesta semana.':'Nenhum marketplace conectado. Conecte o Mercado Livre, a Shopee ou o TikTok Shop para ver o ranking dos seus produtos.'):'Nenhuma venda encontrada.'}${s.scope==='mine'&&!act.length?'<br><button class="btn pri" data-go="int">Ir para Integrações</button>':''}</li>`;
+    }else{
+      list=rows.map((r,i)=>{
+        const d=pct(r.units,r.prev),me=r.p.mine;
+        const seg=r.keys.filter(x=>r.p.u[x]>0).map(x=>`<span class="${x}" style="width:${r.p.u[x]/max*100}%" title="${CHN[x]}: ${r.p.u[x]}"></span>`).join('');
+        return `<li class="${me?'me':''}"><span class="rk">${i+1}</span><div style="min-width:0"><div class="nm">${esc(r.p.n)}</div><div class="st">${me?mineName:esc(r.p.st)}${me&&s.scope==='all'?'<span class="tag">Você</span>':''} · ${brl(r.p.p)}</div></div><div class="fig"><b>${num(r.units)} vendidos</b><span class="${d>=0?'up':'down'}">${d>=0?'▲':'▼'} ${Math.abs(d)}%</span></div><div class="bar">${seg}</div></li>`;
+      }).join('');
+      if(s.scope==='all'){const ix=all.findIndex(r=>r.p.mine);ins=ix>=0?`Seu produto mais vendido na plataforma, ${esc(all[ix].p.n)}, está em #${ix+1} de ${all.length}.`:''}
+      else ins='Os segmentos da barra mostram as unidades por canal. Comparação com a semana anterior.';
+    }
+    return H.head('Dashboard',`Semana de ${fd(days[0],{day:'numeric',month:'short'})} a ${fd(days[6],{day:'numeric',month:'short',year:'numeric'})}`)+
+    `<p class="lead">${act.length?`Você vendeu ${brl(rev)} nesta semana, <span class="${dl>=0?'up':'down'}">${dl>=0?'alta':'queda'} de ${Math.abs(dl)}%</span> sobre a semana anterior.`:'Conecte um marketplace para acompanhar suas vendas.'}</p>
+    <div class="kpis stag">${act.length?k('Receita',brl(rev),rev,prev)+k('Pedidos',num(o),o,po)+k('Unidades vendidas',num(u),u,pu)+k('Ticket médio',brl(o?rev/o:0),o?rev/o:0,po?prev/po:0):''}</div>
+    <div class="dgrid"><div class="glass pan"><div class="row-h"><h2>Top 10 da semana</h2>
+      <div class="seg" role="group" aria-label="Escopo"><button data-scope="mine" aria-pressed="${s.scope==='mine'}">Minha loja</button><button data-scope="all" aria-pressed="${s.scope==='all'}">Todas as lojas</button></div></div>
+      <div class="chips" role="group" aria-label="Filtrar por canal">${[['all','Todos os canais']].concat(KEYS.map(x=>[x,CHN[x]])).map(([x,l])=>`<button class="chip" data-ch="${x}" aria-pressed="${s.ch===x}">${x==='all'?'':`<span class="dot ${x}"></span>`}${l}</button>`).join('')}</div>
+      <ol class="rank">${list}</ol><p class="note">${ins}</p></div>
+    <div><div class="glass pan"><h2 style="font-size:20px">Receita diária da minha loja</h2>
+      <svg viewBox="0 0 320 170" width="100%" role="img" aria-label="Receita diária por canal nos últimos 7 dias">${chart()}</svg>
+      <div class="legend">${act.map(x=>`<span><i class="dot ${x}"></i>${CHN[x]}</span>`).join('')}</div></div></div></div>`;
+  },
+  bind(r){r.onclick=e=>{const t=e.target.closest('button');if(!t)return;
+    if(t.dataset.scope){H.state.scope=t.dataset.scope;H.rerender()}
+    else if(t.dataset.ch){H.state.ch=t.dataset.ch;H.rerender()}}}
+};
+})(Hub);
+
+</script>
+<script>
+(function(H){
+const {esc,brl2,num}=H;
+const form=p=>`<label class="f">Nome<input name="n" required maxlength="80" value="${esc(p.n||'')}"></label>
+<label class="f">Categoria<input name="cat" required maxlength="30" value="${esc(p.cat||'')}"></label>
+<div class="g2"><label class="f">Preço (R$)<input name="p" type="number" step="0.01" min="0.01" required value="${p.p||''}"></label>
+<label class="f">Estoque<input name="st" type="number" min="0" step="1" required value="${p.stock??''}"></label></div>`;
+const val=f=>({n:f.get('n').trim(),cat:f.get('cat').trim(),p:+f.get('p'),stock:Math.round(+f.get('st'))});
+function edit(id,patch){
+  const s=H.state,x=s.extra.find(e=>e.id===id);
+  if(x)Object.assign(x,patch);else s.ed[id]=Object.assign(s.ed[id]||{},patch);
+  H.save();
+}
+H.views.prod={search:true,ph:'Buscar produto ou SKU...',
+  render(){
+    const s=H.state,q=s.q.trim().toLowerCase(),min=+s.set.min,act=H.active();
+    let all=H.products().filter(p=>p.mine).map(p=>Object.assign({},p,{sales:act.reduce((a,k)=>a+p.u[k],0)}));
+    const total=all.reduce((a,p)=>a+p.p*p.stock,0),low=all.filter(p=>p.stock<=min).length;
+    let rows=all.filter(p=>!q||(p.n+p.sku+p.cat).toLowerCase().includes(q));
+    const {k,d}=s.sort;
+    rows.sort((a,b)=>k==='n'?d*a.n.localeCompare(b.n):d*(a[k]-b[k]));
+    const th=(key,l)=>`<th><button class="sortb" data-sort="${key}">${l}${k===key?(d>0?' ▲':' ▼'):''}</button></th>`;
+    const st=p=>p.stock===0?'<span class="pill bad">Sem estoque</span>':p.stock<=min?'<span class="pill warn">Estoque baixo</span>':'<span class="pill ok">Em estoque</span>';
+    return H.head('Produtos','Gerencie preço e estoque do catálogo da sua loja.','<button class="btn pri fit" data-add>+ Novo produto</button>')+
+    `<div class="kpis stag"><div class="glass kpi"><small>Produtos</small><b>${all.length}</b></div><div class="glass kpi"><small>Estoque baixo ou zerado</small><b class="${low?'down':''}">${low}</b></div><div class="glass kpi"><small>Valor em estoque</small><b>${brl2(total)}</b></div></div>
+    <div class="glass tw">${rows.length?`<table><thead><tr>${th('n','Produto')}<th>SKU</th>${th('p','Preço')}${th('stock','Estoque')}${th('sales','Vendas na semana')}<th>Status</th><th></th></tr></thead><tbody>${rows.map(p=>`<tr>
+      <td><div class="nm" style="max-width:280px">${esc(p.n)}</div><div class="st">${esc(p.cat)}</div></td><td>${esc(p.sku)}</td><td>${brl2(p.p)}</td>
+      <td><input class="stk" type="number" min="0" step="1" value="${p.stock}" data-stock="${p.id}" aria-label="Estoque de ${esc(p.n)}"></td>
+      <td>${act.length?num(p.sales):'—'}</td><td>${st(p)}</td>
+      <td><div class="row-acts"><button class="btn off sm" data-edit="${p.id}">Editar</button><button class="btn off sm" data-del="${p.id}">Excluir</button></div></td></tr>`).join('')}</tbody></table>`:H.empty('Nenhum produto encontrado.')}</div>
+    ${act.length?'':'<p class="note">Conecte um marketplace para ver as vendas por produto.</p>'}`;
+  },
+  bind(r){
+    r.onclick=e=>{
+      const t=e.target.closest('button');if(!t)return;const d=t.dataset;
+      if(d.sort){const s=H.state.sort;H.state.sort=s.k===d.sort?{k:s.k,d:-s.d}:{k:d.sort,d:d.sort==='n'?1:-1};H.rerender()}
+      else if('add' in d)H.modal({title:'Novo produto',body:form({}),ok:'Adicionar',onOk(f){
+        H.state.extra.push(Object.assign({id:'u'+Date.now(),sku:'FN-'+Math.floor(1000+Math.random()*9000)},val(f)));
+        H.save();H.rerender();H.refresh();H.toast('Produto adicionado.')}});
+      else if(d.edit){const p=H.products().find(x=>x.id===d.edit);H.modal({title:'Editar produto',body:form(p),onOk(f){edit(p.id,val(f));H.rerender();H.refresh();H.toast('Produto atualizado.')}})}
+      else if(d.del){const p=H.products().find(x=>x.id===d.del);H.modal({title:'Excluir produto',danger:true,ok:'Excluir',body:`<p>Excluir <b>${esc(p.n)}</b> do catálogo?</p>`,onOk(){
+        const s=H.state;if(p.id[0]==='u')s.extra=s.extra.filter(x=>x.id!==p.id);else s.del.push(p.id);
+        H.save();H.rerender();H.refresh();H.toast('Produto excluído.')}})}
+    };
+    r.onchange=e=>{const i=e.target.closest('[data-stock]');if(!i)return;
+      edit(i.dataset.stock,{stock:Math.max(0,Math.round(+i.value||0))});H.rerender();H.refresh();H.toast('Estoque atualizado.')};
+  }
+};
+})(Hub);
+
+</script>
+<script>
+(function(H){
+const {esc,brl2,CHN,KEYS}=H;
+const FLOW={Pendente:'Pago',Pago:'Enviado',Enviado:'Entregue'};
+const CLS={Pendente:'warn',Pago:'info',Enviado:'info',Entregue:'ok',Cancelado:'bad'};
+const STS=['Pendente','Pago','Enviado','Entregue','Cancelado'];
+const dt=t=>new Date(t).toLocaleString('pt-BR',{day:'2-digit',month:'short',hour:'2-digit',minute:'2-digit'});
+function visible(){
+  const s=H.state,q=s.q.trim().toLowerCase();
+  return H.orderList().filter(o=>(s.ocan==='all'||o.ch===s.ocan)&&(!q||(o.id+o.cust+o.n).toLowerCase().includes(q)));
+}
+H.views.ped={search:true,ph:'Buscar pedido, cliente ou produto...',
+  render(){
+    const s=H.state,base=visible(),rows=base.filter(o=>s.ofil==='all'||o.s===s.ofil);
+    const cnt=x=>base.filter(o=>o.s===x).length;
+    const total=base.filter(o=>o.s!=='Cancelado').reduce((a,o)=>a+o.qty*o.price,0);
+    const head=H.head('Pedidos','Acompanhe e atualize os pedidos dos marketplaces conectados.',`<button class="btn off fit" data-csv ${rows.length?'':'disabled'}>Exportar CSV</button>`);
+    if(!H.active().length)return head+`<div class="glass">${H.empty('Nenhum marketplace conectado, então ainda não há pedidos.',['int','Ir para Integrações'])}</div>`;
+    return head+`<div class="chips" role="group" aria-label="Filtrar por status"><button class="chip" data-st="all" aria-pressed="${s.ofil==='all'}">Todos (${base.length})</button>${STS.map(x=>`<button class="chip" data-st="${x}" aria-pressed="${s.ofil===x}">${x} (${cnt(x)})</button>`).join('')}</div>
+    <div class="chips" role="group" aria-label="Filtrar por canal"><button class="chip" data-can="all" aria-pressed="${s.ocan==='all'}">Todos os canais</button>${H.active().map(k=>`<button class="chip" data-can="${k}" aria-pressed="${s.ocan===k}"><span class="dot ${k}"></span>${CHN[k]}</button>`).join('')}</div>
+    <p class="note" style="margin:0 0 12px">Receita dos pedidos listados (sem cancelados): <b>${brl2(total)}</b></p>
+    <div class="glass">${rows.length?rows.map(o=>`<div class="ord"><div><div class="id">${o.id} <span class="pill ${CLS[o.s]}">${o.s}</span></div><div class="st">${esc(o.cust)} · ${dt(o.t)}</div></div>
+      <div><div class="nm">${o.qty}× ${esc(o.n)}</div><div class="st"><span class="dot ${o.ch}"></span> ${CHN[o.ch]}</div></div>
+      <b>${brl2(o.qty*o.price)}</b>
+      <div class="acts">${FLOW[o.s]?`<button class="btn pri sm" data-adv="${o.id}">Marcar como ${FLOW[o.s].toLowerCase()}</button>`:''}${o.s==='Pendente'||o.s==='Pago'?`<button class="btn off sm" data-cancel="${o.id}">Cancelar</button>`:''}</div></div>`).join(''):H.empty('Nenhum pedido encontrado com esses filtros.')}</div>`;
+  },
+  bind(r){
+    const set=(id,v)=>{H.state.os[id]=v;H.save();H.rerender();H.refresh()};
+    r.onclick=e=>{
+      const t=e.target.closest('button');if(!t)return;const d=t.dataset;
+      if(d.st){H.state.ofil=d.st;H.rerender()}
+      else if(d.can){H.state.ocan=d.can;H.rerender()}
+      else if(d.adv){const o=H.orderList().find(x=>x.id===d.adv);set(o.id,FLOW[o.s]);H.toast(`Pedido ${o.id}: ${FLOW[o.s].toLowerCase()}.`)}
+      else if(d.cancel){H.modal({title:'Cancelar pedido',danger:true,ok:'Cancelar pedido',body:`<p>Cancelar o pedido <b>${esc(d.cancel)}</b>? Esta ação não pode ser desfeita.</p>`,onOk(){set(d.cancel,'Cancelado');H.toast('Pedido cancelado.')}})}
+      else if('csv' in d){
+        const s=H.state,rows=visible().filter(o=>s.ofil==='all'||o.s===s.ofil);
+        const csv=['Pedido;Cliente;Produto;Qtd;Canal;Total;Status;Data'].concat(rows.map(o=>[o.id,o.cust,o.n,o.qty,CHN[o.ch],(o.qty*o.price).toFixed(2).replace('.',','),o.s,dt(o.t)].join(';'))).join('\n');
+        try{const a=document.createElement('a');a.href=URL.createObjectURL(new Blob(['\ufeff'+csv],{type:'text/csv'}));a.download='pedidos.csv';a.click();H.toast('Arquivo pedidos.csv gerado.')}catch(x){H.toast('Não foi possível gerar o arquivo.')}
+      }
+    };
+  }
+};
+})(Hub);
+
+</script>
+<script>
+(function(H){
+const {esc}=H;
+const INT=[
+ {id:'ml',g:'mk',n:'Mercado Livre',d:'Conecte sua loja Mercado Livre para importar pedidos e atualizar estoque automaticamente.',oauth:1,logo:'<span class="lg ml">mercado livre</span>'},
+ {id:'sp',g:'mk',n:'Shopee',d:'Sincronize produtos e vendas da Shopee à sua conta Fourncy.ia.',logo:'<span class="lg sp"><i>S</i>Shopee</span>'},
+ {id:'tt',g:'mk',n:'TikTok Shop',d:'Integre o TikTok Shop para gerenciar pedidos e campanhas.',logo:'<span class="lg tt"><i>♪</i>TikTok Shop</span>'},
+ {id:'cj',g:'su',n:'CJDropshipping',d:'Importe produtos e sincronize fulfillment automaticamente.',ph:'Cole sua API Key do CJDropshipping',logo:'<span class="lg cj"><i>CJ</i>CJDropshipping</span>'},
+ {id:'hy',g:'su',n:'Hayamax',d:'Integre o catálogo da Hayamax para dropshipping.',logo:'<span class="lg hy"><i>H</i>Hayamax</span>'},
+ {id:'ab',g:'su',n:'Atacado Barato',d:'Conecte-se ao fornecedor Atacado Barato para preços e estoque.',logo:'<span class="lg ab"><i>A</i>Atacado Barato</span>'}
+];
+const card=it=>{
+  const on=H.state.conn[it.id];
+  const field=on?'<div class="fld"><input value="••••••••••••" disabled aria-label="API Key salva"></div>':
+    `<div class="fld"><input id="k-${it.id}" placeholder="${it.ph||'Insira sua API Key'}" autocomplete="off" aria-label="API Key ${it.n}">${it.oauth?'<svg class="i" viewBox="0 0 24 24" style="color:var(--mute)"><circle cx="8" cy="15" r="3.5"/><path d="M10.5 12.5L19 4M16 7l2.5 2.5"/></svg>':''}</div>`;
+  let act;
+  if(on)act=`<button class="btn off" data-off="${it.id}">Desconectar</button>`;
+  else if(it.oauth)act=`<button class="btn pri" data-oauth="${it.id}"><svg class="i" viewBox="0 0 24 24"><path d="M10 14a4 4 0 005.7 0l3-3a4 4 0 00-5.7-5.7l-1 1M14 10a4 4 0 00-5.7 0l-3 3A4 4 0 0011 18.7l1-1"/></svg>Conectar Loja via Oauth</button>`;
+  else act=`<button class="btn ${it.id==='cj'?'vio':''}" data-on="${it.id}"><svg class="i" viewBox="0 0 24 24"><path d="M4 9h13l-3-3M20 15H7l3 3"/></svg>Conectar</button>`;
+  return `<article class="glass card"><div class="ch">${it.logo}<span class="pill ${on?'on':''}">${on?'Conectado':'Desconectado'}</span></div>
+  <h3>${it.n}</h3><p>${it.d}</p><label for="k-${it.id}">API Key</label>${field}<p class="msg" id="m-${it.id}"></p>${act}</article>`;
+};
+const done=(id,msg)=>{H.state.conn[id]=true;H.save();H.rerender();H.refresh();H.toast(msg)};
+H.views.int={search:true,ph:'Buscar integração...',
+  render(){
+    const q=H.state.q.trim().toLowerCase();
+    const grp=g=>INT.filter(i=>i.g===g&&i.n.toLowerCase().includes(q)).map(card).join('');
+    const mk=grp('mk'),su=grp('su');
+    const conn=INT.filter(i=>H.state.conn[i.id]).length;
+    return H.head('Integrações / Conexões','Conecte sua conta para sincronizar marketplaces e fornecedores. Suas credenciais são criptografadas e seguras.',
+    `<div class="glass how"><h3>${H.ico('M12 3l2 6 6 2-6 2-2 6-2-6-6-2 6-2z')}Conecte sua conta</h3><ol><li>Escolha o marketplace ou fornecedor</li><li>Clique em Conectar e autorize via Oauth</li><li>Insira sua API Key para finalizar a sincronização</li></ol></div>`)+
+    `<div class="sec"><h2>Marketplaces</h2><span class="cnt">3 integrações disponíveis</span></div><div class="cards stag">${mk}</div>
+    <div class="sec"><h2>Fornecedores</h2><span class="cnt">3 fornecedores disponíveis</span></div><div class="cards stag">${su}</div>
+    ${mk||su?'':H.empty('Nenhuma integração encontrada. Tente outro nome.')}
+    <p class="note">${conn} de 6 integrações conectadas. Modo demonstração: a conexão é simulada e a chave digitada não é guardada.</p>`;
+  },
+  bind(r){r.onclick=e=>{
+    const t=e.target.closest('button');if(!t)return;const d=t.dataset;
+    if(d.on){
+      const inp=document.getElementById('k-'+d.on);
+      if(!inp.value.trim()){inp.parentElement.classList.add('err');document.getElementById('m-'+d.on).textContent='Insira sua API Key para conectar.';inp.focus();return}
+      t.disabled=true;t.textContent='Conectando…';
+      const it=INT.find(i=>i.id===d.on);setTimeout(()=>done(d.on,it.n+' conectado.'),700);
+    }else if(d.oauth){
+      const it=INT.find(i=>i.id===d.oauth);
+      H.modal({title:'Conectar '+it.n,ok:'Autorizar',body:`<p>A Fourncy.ia vai ler pedidos e anúncios da sua conta ${it.n}. Ela não altera preços nem edita anúncios.</p>`,onOk(){done(it.id,it.n+' conectado.')}});
+    }else if(d.off){
+      const it=INT.find(i=>i.id===d.off);
+      H.modal({title:'Desconectar '+it.n,danger:true,ok:'Desconectar',body:`<p>Os dados de ${it.n} saem do Dashboard, dos Pedidos e das Análises até você conectar de novo.</p>`,onOk(){H.state.conn[it.id]=false;H.save();H.rerender();H.refresh();H.toast(it.n+' desconectado.')}});
+    }
+  };
+  r.oninput=e=>{if(e.target.closest('.fld.err')){e.target.parentElement.classList.remove('err');const m=document.getElementById('m-'+e.target.id.slice(2));if(m)m.textContent=''}};}
+};
+})(Hub);
+
+</script>
+<script>
+(function(H){
+const {brl,num,pct,CHN,days,fd}=H;
+H.views.ana={
+  render(){
+    const act=H.active(),head=H.head('Análises','Compare a semana atual com a anterior, por canal, dia e categoria.');
+    if(!act.length)return head+`<div class="glass">${H.empty('Conecte um marketplace para gerar análises.',['int','Ir para Integrações'])}</div>`;
+    const mine=H.products().filter(p=>p.mine);
+    const rev=(k,pr)=>mine.reduce((a,p)=>a+(pr?p.pv[k]:p.u[k])*p.p,0);
+    const byCh=act.map(k=>({k,v:rev(k,0),pv:rev(k,1)}));
+    const tot=byCh.reduce((a,c)=>a+c.v,0),ptot=byCh.reduce((a,c)=>a+c.pv,0);
+    const units=mine.reduce((a,p)=>a+act.reduce((x,k)=>x+p.u[k],0),0);
+    const cur=days.map((_,i)=>mine.reduce((a,p)=>a+act.reduce((x,k)=>x+p.u[k],0)*p.p*p.d[i],0));
+    const prv=days.map((_,i)=>mine.reduce((a,p)=>a+act.reduce((x,k)=>x+p.pv[k],0)*p.p*p.d[i],0));
+    const best=cur.indexOf(Math.max(...cur));
+    const cats={};mine.forEach(p=>{cats[p.cat]=(cats[p.cat]||0)+act.reduce((x,k)=>x+p.u[k],0)*p.p});
+    const cl=Object.entries(cats).filter(c=>c[1]>0).sort((a,b)=>b[1]-a[1]);
+    const mx=Math.max(...byCh.map(c=>c.v),1),cmx=Math.max(...cl.map(c=>c[1]),1);
+    const W=520,Ht=190,L=10,B=26,T=14,ym=Math.max(...cur,...prv,1);
+    const X=i=>L+i*(W-2*L)/6,Y=v=>Ht-B-v/ym*(Ht-B-T);
+    const line=a=>a.map((v,i)=>`${X(i).toFixed(1)},${Y(v).toFixed(1)}`).join(' ');
+    const k=(l,v,x)=>`<div class="glass kpi"><small>${l}</small><b>${v}</b>${x||''}</div>`;
+    const d=pct(tot,ptot);
+    return head+`<div class="kpis stag">${k('Receita da semana',brl(tot),`<i class="${d>=0?'up':'down'}">${d>=0?'+':'−'}${Math.abs(d)}%</i>`)}${k('Unidades vendidas',num(units))}${k('Ticket médio',brl(tot/Math.max(1,Math.round(units/1.34))))}${k('Melhor dia',fd(days[best],{weekday:'long'}).replace('-feira',''))}</div>
+    <div class="ana stag">
+    <div class="glass pan"><h2 style="font-size:20px;margin-bottom:8px">Receita por canal</h2>${byCh.map(c=>{const dd=pct(c.v,c.pv);return `<div class="hb"><span><i class="dot ${c.k}"></i> ${CHN[c.k]}</span><div class="tr"><i class="bg-${c.k}" style="width:${c.v/mx*100}%"></i></div><b>${brl(c.v)} <span class="${dd>=0?'up':'down'}" style="font-size:12px">${dd>=0?'+':'−'}${Math.abs(dd)}%</span></b></div>`}).join('')}</div>
+    <div class="glass pan"><h2 style="font-size:20px;margin-bottom:8px">Receita por categoria</h2>${cl.map(c=>`<div class="hb"><span>${H.esc(c[0])}</span><div class="tr"><i class="bg-cat" style="width:${c[1]/cmx*100}%"></i></div><b>${brl(c[1])}</b></div>`).join('')||'<p class="mute">Sem vendas.</p>'}</div>
+    <div class="glass pan wide"><h2 style="font-size:20px">Receita diária: esta semana vs. anterior</h2>
+      <svg viewBox="0 0 ${W} ${Ht}" width="100%" role="img" aria-label="Linha de receita diária">
+      ${[0,.5,1].map(f=>`<line x1="${L}" x2="${W-L}" y1="${Y(ym*f)}" y2="${Y(ym*f)}" stroke="rgba(160,180,255,.15)"/>`).join('')}
+      <polyline points="${line(prv)}" fill="none" stroke="var(--mute)" stroke-width="2" stroke-dasharray="5 5"/>
+      <polyline points="${line(cur)}" fill="none" stroke="var(--cy)" stroke-width="3" stroke-linejoin="round"/>
+      ${cur.map((v,i)=>`<circle cx="${X(i)}" cy="${Y(v)}" r="4" fill="var(--cy)"><title>${fd(days[i],{weekday:'short',day:'numeric'})}: ${brl(v)}</title></circle><text x="${X(i)}" y="${Ht-8}" text-anchor="middle">${fd(days[i],{weekday:'short'}).replace('.','')}</text>`).join('')}</svg>
+      <div class="legend"><span><i class="dot" style="background:var(--cy)"></i>Esta semana</span><span><i class="dot" style="background:var(--mute)"></i>Semana anterior</span></div></div></div>`;
+  }
+};
+})(Hub);
+
+</script>
+<script>
+(function(H){
+const RULES=[
+ ['lowstock','Alerta de estoque baixo','Avisa no sino quando um produto chega ao estoque mínimo ou abaixo dele.'],
+ ['pause','Pausar anúncios sem estoque','Pausa o anúncio quando o estoque chega a zero.'],
+ ['sync','Sincronizar estoque a cada hora','Atualiza o estoque nos marketplaces conectados.'],
+ ['reply','Resposta automática a mensagens','Envia uma mensagem de boas-vindas aos compradores.'],
+ ['report','Relatório semanal por e-mail','Envia o resumo de vendas toda segunda-feira.']];
+const hm=t=>new Date(t).toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'});
+const log=m=>{H.state.log.unshift({t:Date.now(),m});H.state.log=H.state.log.slice(0,8)};
+H.views.aut={
+  render(){
+    const s=H.state,on=Object.values(s.auto).filter(Boolean).length;
+    return H.head('Automações',`Deixe a Fourncy.ia cuidar das tarefas repetitivas. ${on} de ${RULES.length} regras ativas.`,'<button class="btn off fit" data-run>Verificar estoque agora</button>')+
+    `<div class="glass">${RULES.map(([id,t,d])=>`<div class="rule"><div><b>${t}</b><span>${d}</span></div>${H.sw(!!s.auto[id],`data-rule="${id}" aria-label="${t}"`)}</div>`).join('')}</div>
+    <div class="glass pan" style="margin-top:20px"><h2 style="font-size:20px;margin-bottom:8px">Atividade recente</h2>${s.log.length?`<ul class="log">${s.log.map(l=>`<li><time>${hm(l.t)}</time>${H.esc(l.m)}</li>`).join('')}</ul>`:'<p class="mute" style="margin:0">Nenhuma atividade ainda. Ative ou desative uma regra para ver o registro.</p>'}</div>`;
+  },
+  bind(r){r.onclick=e=>{
+    const t=e.target.closest('button');if(!t)return;
+    if(t.dataset.rule){const id=t.dataset.rule,s=H.state,name=RULES.find(x=>x[0]===id)[1];
+      s.auto[id]=!s.auto[id];log(`Regra "${name}" ${s.auto[id]?'ativada':'desativada'}.`);H.save();H.rerender();H.refresh();H.toast(`Regra ${s.auto[id]?'ativada':'desativada'}.`)}
+    else if('run' in t.dataset){
+      const low=H.lowStock(),zero=low.filter(p=>p.stock===0).length;
+      log(`Verificação manual: ${low.length} produto(s) no mínimo ou abaixo, ${zero} sem estoque.`);H.save();H.rerender();
+      H.toast(low.length?`${low.length} produto(s) precisam de reposição.`:'Estoque em dia.');
+    }};}
+};
+})(Hub);
+
+</script>
+<script>
+(function(H){
+H.views.cfg={
+  render(){
+    const s=H.state.set;
+    return H.head('Configurações','Ajuste seu perfil, o nome da loja e os alertas.')+
+    `<form class="glass form" id="cfgForm"><label class="f">E-mail da conta<input value="${H.esc(H.email)}" disabled></label><label class="f">Seu nome<input name="user" required maxlength="40" value="${H.esc(s.user)}"></label>
+    <label class="f">Nome da loja<input name="store" required maxlength="40" value="${H.esc(s.store)}"></label>
+    <label class="f">Estoque mínimo para alertas<input name="min" type="number" min="0" step="1" required value="${s.min}"></label>
+    <div class="chk"><span>Receber alertas por e-mail</span>${H.sw(!!s.mail,'id="mailSw" aria-label="Receber alertas por e-mail"')}</div>
+    <button class="btn pri fit">Salvar alterações</button></form>
+    <div class="glass danger"><h3 style="font-size:18px;margin-bottom:6px">Restaurar dados de exemplo</h3><p class="mute" style="margin:0 0 14px">Apaga conexões, produtos criados, pedidos atualizados e regras salvas neste navegador.</p><button class="btn dng fit" data-reset>Restaurar tudo</button></div>`;
+  },
+  bind(r){
+    r.onclick=e=>{
+      const sw=e.target.closest('#mailSw');
+      if(sw)sw.setAttribute('aria-checked',sw.getAttribute('aria-checked')!=='true');
+      else if(e.target.closest('[data-reset]'))H.modal({title:'Restaurar dados de exemplo',danger:true,ok:'Restaurar',body:'<p>Esta ação apaga os dados salvos neste navegador e recarrega a página.</p>',onOk(){H.reset()}});
+    };
+    r.onsubmit=e=>{
+      e.preventDefault();const f=new FormData(e.target),s=H.state.set;
+      s.user=f.get('user').trim();H.auth.rename(H.email,s.user);s.store=f.get('store').trim();s.min=Math.max(0,Math.round(+f.get('min')));
+      s.mail=document.getElementById('mailSw').getAttribute('aria-checked')==='true';
+      H.save();H.refresh();H.toast('Configurações salvas.');
+    };
+  }
+};
+})(Hub);
+
+</script>
+<script>
+(function(H){
+const {esc}=H;
+const ROLES=['Administrador','Editor','Visualizador'];
+const ini=n=>n.split(/\s+/).map(w=>w[0]).slice(0,2).join('').toUpperCase();
+H.views.eq={search:true,ph:'Buscar membro...',
+  render(){
+    const q=H.state.q.trim().toLowerCase(),list=H.state.team.filter(m=>!q||(m.n+m.e).toLowerCase().includes(q));
+    return H.head('Equipe',`${H.state.team.length} pessoas com acesso à sua conta.`,'<button class="btn pri fit" data-add>+ Convidar membro</button>')+
+    (list.length?`<div class="tgrid stag">${list.map(m=>`<article class="glass mem"><div class="hd"><span class="av">${esc(ini(m.n))}</span><div style="min-width:0"><b>${esc(m.n)}</b><div class="st" style="overflow:hidden;text-overflow:ellipsis">${esc(m.e)}</div></div></div>
+    ${m.r==='Proprietário'?'<span class="pill info" style="align-self:flex-start">Proprietário</span>':`<select data-role="${m.id}" aria-label="Função de ${esc(m.n)}">${ROLES.map(r=>`<option ${r===m.r?'selected':''}>${r}</option>`).join('')}</select><button class="btn off sm" data-rm="${m.id}" style="align-self:flex-start">Remover</button>`}</article>`).join('')}</div>`:`<div class="glass">${H.empty('Nenhum membro encontrado.')}</div>`);
+  },
+  bind(r){
+    r.onclick=e=>{
+      const t=e.target.closest('button');if(!t)return;
+      if('add' in t.dataset)H.modal({title:'Convidar membro',ok:'Convidar',body:`<label class="f">Nome<input name="n" required maxlength="40"></label><label class="f">E-mail<input name="e" type="email" required maxlength="80"></label><label class="f">Função<select name="r">${ROLES.map(x=>`<option>${x}</option>`).join('')}</select></label>`,
+        onOk(f){H.state.team.push({id:'t'+Date.now(),n:f.get('n').trim(),e:f.get('e').trim(),r:f.get('r')});H.save();H.rerender();H.toast('Convite enviado (simulado).')}});
+      else if(t.dataset.rm){const m=H.state.team.find(x=>x.id===t.dataset.rm);
+        H.modal({title:'Remover membro',danger:true,ok:'Remover',body:`<p>Remover <b>${esc(m.n)}</b> da equipe? A pessoa perde o acesso à conta.</p>`,onOk(){H.state.team=H.state.team.filter(x=>x.id!==m.id);H.save();H.rerender();H.toast('Membro removido.')}})}
+    };
+    r.onchange=e=>{const s=e.target.closest('[data-role]');if(!s)return;
+      H.state.team.find(x=>x.id===s.dataset.role).r=s.value;H.save();H.toast('Função atualizada.')};
+  }
+};
+})(Hub);
+
+</script>
+<script>
+(function(H){
+const FAQ=[
+ ['Como conecto o Mercado Livre?','Abra Integrações, clique em "Conectar Loja via Oauth" e autorize o acesso. Depois da conexão, pedidos e vendas aparecem no Dashboard.'],
+ ['Como conecto Shopee, TikTok Shop e fornecedores?','Cole a API Key gerada no painel do vendedor ou do fornecedor e clique em Conectar.'],
+ ['O que é o Top 10 da semana?','É o ranking dos produtos mais vendidos nos últimos 7 dias. Você pode ver só a sua loja ou todas as lojas da plataforma, e filtrar por canal.'],
+ ['Como atualizo o estoque?','Em Produtos, edite o número direto na tabela ou use o botão Editar. Alterações de estoque disparam os alertas configurados em Automações.'],
+ ['Como atualizo o status de um pedido?','Em Pedidos, use o botão de avanço (pago, enviado, entregue) ou cancele pedidos pendentes e pagos.'],
+ ['Meus dados ficam salvos onde?','Neste protótipo, no armazenamento do seu navegador. Em uma versão com servidor, as chaves ficariam criptografadas no backend.']];
+const ICON='<svg class="i" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg>';
+H.views.aj={search:true,ph:'Buscar na ajuda...',
+  render(){
+    const q=H.state.q.trim().toLowerCase(),list=FAQ.filter(f=>!q||(f[0]+f[1]).toLowerCase().includes(q));
+    return H.head('Ajuda','Respostas rápidas e contato com o suporte.')+
+    `<div class="glass faq">${list.length?list.map((f,i)=>`<div class="qa" data-open="0"><button aria-expanded="false" data-qa>${f[0]}${ICON}</button><div class="ans"><div><p>${f[1]}</p></div></div></div>`).join(''):H.empty('Nada encontrado. Envie sua dúvida abaixo.')}</div>
+    <form class="glass form" id="supForm"><h3 style="font-size:18px;margin-bottom:12px">Falar com o suporte</h3>
+    <label class="f">Assunto<input name="s" required maxlength="80"></label>
+    <label class="f">Mensagem<textarea name="m" rows="4" required maxlength="600"></textarea></label>
+    <button class="btn pri fit">Enviar mensagem</button></form>`;
+  },
+  bind(r){
+    r.onclick=e=>{const b=e.target.closest('[data-qa]');if(!b)return;const q=b.parentElement,o=q.dataset.open!=='1';
+      q.dataset.open=o?'1':'0';b.setAttribute('aria-expanded',o)};
+    r.onsubmit=e=>{e.preventDefault();e.target.reset();H.toast('Mensagem enviada (simulado). Respondemos em até 1 dia útil.')};
+  }
+};
+})(Hub);
+
+</script>
+<script>
+(function(H){
+const {$,$$,ico}=H;
+const NAV=[['dash','Dashboard','M4 4h6v6H4zM14 4h6v6h-6zM4 14h6v6H4zM14 14h6v6h-6z'],['prod','Produtos','M12 3l8 4.5v9L12 21l-8-4.5v-9zM4 7.5l8 4.5 8-4.5M12 12v9'],['ped','Pedidos','M8 4h8v3H8zM6 6h12v15H6zM9 12h6M9 16h6'],['int','Integrações','M4 7h10M18 7h2M4 17h2M10 17h10M14 5v4M6 15v4'],['ana','Análises','M5 20V10M12 20V4M19 20v-7'],['aut','Automações','M12 3l2 6 6 2-6 2-2 6-2-6-6-2 6-2z'],['cfg','Configurações','M12 8.5a3.5 3.5 0 100 7 3.5 3.5 0 000-7zM12 3v3M12 18v3M3 12h3M18 12h3'],['eq','Equipe','M9 11a3 3 0 100-6 3 3 0 000 6zM3 20c0-3 3-5 6-5s6 2 6 5M17 11a2.5 2.5 0 100-5M21 19c0-2-1.5-3.5-4-4'],['aj','Ajuda','M12 3a9 9 0 100 18 9 9 0 000-18zM9.5 9.5a2.5 2.5 0 115 0c0 2-2.5 2-2.5 4M12 17v.5']];
+const ids=NAV.map(n=>n[0]);
+const reduced=matchMedia('(prefers-reduced-motion:reduce)').matches;
+let tok=0;
+const route=()=>{const id=location.hash.replace('#/','');return ids.includes(id)?id:'int'};
+H.go=id=>{if(location.hash==='#/'+id)return;location.hash='#/'+id};
+
+H.refresh=()=>{
+  const s=H.state.set,a=H.alerts();
+  $('#uName').textContent=s.user;$('#uAv').textContent=s.user.split(/\s+/).map(w=>w[0]).slice(0,2).join('').toUpperCase();
+  $('#bell').classList.toggle('n',a.length>0);
+  $('#popl').innerHTML=a.length?a.map(x=>`<button data-go="${x.go}">${H.esc(x.m)}</button>`).join(''):'<p class="mute pad">Nenhum alerta no momento.</p>';
+};
+H.rerender=()=>{
+  const r=$('#view'),v=H.views[H.cur];
+  r.className='';r.innerHTML=v.render();v.bind&&v.bind(r);
+};
+function mount(id){
+  const r=$('#view'),v=H.views[id];
+  H.cur=id;H.state.q='';
+  const q=$('#q');q.value='';q.disabled=!v.search;q.placeholder=v.search?v.ph:'Sem busca nesta página';
+  r.className='';r.innerHTML=v.render();v.bind&&v.bind(r);
+  void r.offsetWidth;r.classList.add('enter');
+  $$('#nav button').forEach(b=>{if(b.dataset.go===id)b.setAttribute('aria-current','page');else b.removeAttribute('aria-current')});
+  H.refresh();window.scrollTo({top:0});
+}
+function show(animate){
+  const id=route(),r=$('#view'),t=++tok;
+  if(!animate||reduced||id===H.cur){mount(id);return}
+  r.classList.remove('enter');r.classList.add('leaving');
+  setTimeout(()=>{if(t===tok){mount(id);r.classList.remove('leaving')}},150);
+}
+$('#nav').innerHTML=NAV.map(([id,l,d])=>`<button data-go="${id}">${ico(d)}${l}</button>`).join('');
+window.addEventListener('hashchange',()=>show(true));
+document.addEventListener('click',e=>{
+  if(e.target.closest('[data-logout]')){H.auth.logout();return}
+  const g=e.target.closest('[data-go]');
+  if(g){$('#pop').classList.add('hide');$('#bell').setAttribute('aria-expanded','false');H.go(g.dataset.go);return}
+  if(e.target.closest('#bell')){const p=$('#pop'),open=p.classList.toggle('hide')===false;$('#bell').setAttribute('aria-expanded',open);return}
+  if(!e.target.closest('#pop')){$('#pop').classList.add('hide');$('#bell').setAttribute('aria-expanded','false')}
+});
+document.addEventListener('keydown',e=>{if(e.key==='Escape')$('#pop').classList.add('hide')});
+$('#q').addEventListener('input',e=>{if(H.views[H.cur].search){H.state.q=e.target.value;H.rerender()}});
+H.boot=acct=>{H.loadState(acct);$('#auth').classList.add('hide');$('#app').classList.remove('hide');show(false)};
+})(Hub);
+
+</script>
+<script>
+(function(H){
+H.authScreen=()=>{
+  const $=H.$,f=$('#aForm'),err=$('#aErr'),go=$('#aGo');
+  let mode='in',fails=0,lock=0;
+  $('#auth').classList.remove('hide');
+  const COPY={in:['Bem-vindo de volta','Entre para acompanhar suas vendas.','Entrar'],up:['Crie sua conta','Leva menos de um minuto.','Criar conta']};
+  function setMode(m){
+    mode=m;f.dataset.mode=m;err.textContent='';
+    $('#aT').textContent=COPY[m][0];$('#aS').textContent=COPY[m][1];go.textContent=COPY[m][2];
+    H.$$('[data-mode-btn]').forEach(b=>b.setAttribute('aria-pressed',b.dataset.modeBtn===m));
+    f.elements.pw.autocomplete=m==='up'?'new-password':'current-password';
+  }
+  const fail=(msg,field)=>{err.textContent=msg;f.elements[field].focus()};
+  document.addEventListener('click',e=>{
+    const b=e.target.closest('[data-mode-btn]');if(b)setMode(b.dataset.modeBtn);
+    const eye=e.target.closest('[data-eye]');
+    if(eye){const show=f.elements.pw.type==='password';f.elements.pw.type=f.elements.pw2.type=show?'text':'password';eye.setAttribute('aria-label',show?'Ocultar senha':'Mostrar senha');eye.setAttribute('aria-pressed',show)}
+  });
+  f.elements.pw.addEventListener('input',e=>{
+    const p=e.target.value;
+    const sc=[p.length>=8,/[a-z]/.test(p)&&/[A-Z]/.test(p),/\d/.test(p),p.length>=12||/[^A-Za-z0-9]/.test(p)].filter(Boolean).length;
+    $('#aMeter').dataset.s=p?sc:0;
+    $('#aMeterT').textContent=p?['Muito fraca','Fraca','Razoável','Boa','Forte'][sc]:'';
+  });
+  f.onsubmit=async e=>{
+    e.preventDefault();err.textContent='';
+    const d=new FormData(f),email=d.get('email').trim(),pw=d.get('pw'),name=(d.get('name')||'').trim();
+    if(Date.now()<lock)return fail(`Muitas tentativas. Aguarde ${Math.ceil((lock-Date.now())/1000)} s.`,'pw');
+    if(!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email))return fail('Digite um e-mail válido.','email');
+    if(mode==='up'){
+      if(name.length<2)return fail('Digite seu nome.','name');
+      if(pw.length<8)return fail('A senha precisa ter pelo menos 8 caracteres.','pw');
+      if(pw!==d.get('pw2'))return fail('As senhas não coincidem.','pw2');
+    }else if(!pw)return fail('Digite sua senha.','pw');
+    const label=go.textContent;go.disabled=true;go.textContent=mode==='up'?'Criando conta…':'Entrando…';
+    try{
+      const r=mode==='up'?await H.auth.create(name,email,pw):await H.auth.login(email,pw);
+      if(r.err){
+        if(mode==='in'&&++fails>=5){lock=Date.now()+30000;fails=0;err.textContent='Muitas tentativas. Aguarde 30 s.'}
+        else err.textContent=r.err;
+      }else{
+        H.auth.session(r.acct.email,d.get('keep')==='on');
+        const first=r.acct.name.split(' ')[0];
+        H.boot(r.acct);f.reset();$('#aMeter').dataset.s=0;
+        H.toast(mode==='up'?'Conta criada. Bem-vindo(a), '+first+'!':'Bem-vindo(a) de volta, '+first+'!');
+      }
+    }catch(x){err.textContent='Este navegador não permite criptografia aqui. Abra a página por https.'}
+    go.disabled=false;go.textContent=label;
+  };
+  setMode('in');f.elements.email.focus();
+};
+})(Hub);
+
+</script>
+<script>
+(function(H){
+const acct=H.auth.current();
+if(acct)H.boot(acct);else H.authScreen();
+})(Hub);
+
+</script>
+</body>
+</html>
