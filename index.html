@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Fourncy.ia – Hub de vendas</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap">
+<link rel="stylesheet" href="css/base.css">
+<link rel="stylesheet" href="css/layout.css">
+<link rel="stylesheet" href="css/components.css">
+<link rel="stylesheet" href="css/views.css">
+<link rel="stylesheet" href="css/auth.css">
+</head>
+<body>
+<div class="app hide" id="app">
+  <aside class="glass side">
+    <div class="brand"><span class="mark">F</span><span>Fourncy<b>.ia</b></span></div>
+    <nav id="nav" aria-label="Menu principal"></nav>
+    <div class="user"><span class="av" id="uAv"></span><div style="min-width:0"><b id="uName"></b><small>Plano Premium</small></div><button class="ib" data-logout aria-label="Sair da conta" title="Sair"><svg class="i" viewBox="0 0 24 24"><path d="M10 4H5v16h5M15 8l4 4-4 4M19 12H9"/></svg></button></div>
+  </aside>
+  <main>
+    <div class="topbar">
+      <label class="glass search"><svg class="i" viewBox="0 0 24 24"><circle cx="11" cy="11" r="6.5"/><path d="M16 16l4 4"/></svg><input id="q" type="search" placeholder="Buscar..." aria-label="Buscar"></label>
+      <div class="popwrap">
+        <button class="ib" id="bell" aria-label="Notificações" aria-expanded="false"><svg class="i" viewBox="0 0 24 24"><path d="M6 17V11a6 6 0 1112 0v6l1.5 2h-15zM10 21h4"/></svg></button>
+        <div class="glass pop hide" id="pop"><h4>Notificações</h4><div id="popl"></div></div>
+      </div>
+      <button class="ib" data-go="cfg" aria-label="Configurações"><svg class="i" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M12 3v3M12 18v3M3 12h3M18 12h3M5.6 5.6l2.1 2.1M16.3 16.3l2.1 2.1M18.4 5.6l-2.1 2.1M7.7 16.3l-2.1 2.1"/></svg></button>
+    </div>
+    <div id="view" tabindex="-1"></div>
+    <div class="glass foot">Todas as conexões utilizam criptografia AES-256 • Suas chaves ficam seguras e podem ser removidas a qualquer momento</div>
+  </main>
+</div>
+<div class="auth hide" id="auth"><div class="glass authcard">
+  <div class="brand"><span class="mark">F</span><span>Fourncy<b>.ia</b></span></div>
+  <div class="seg authseg" role="group" aria-label="Entrar ou criar conta"><button data-mode-btn="in" aria-pressed="true">Entrar</button><button data-mode-btn="up" aria-pressed="false">Criar conta</button></div>
+  <h1 id="aT"></h1><p class="sub" id="aS"></p>
+  <form id="aForm" data-mode="in" novalidate>
+    <div class="ex"><div><label class="f">Seu nome<input name="name" autocomplete="name" maxlength="40"></label></div></div>
+    <label class="f">E-mail<input name="email" type="email" autocomplete="username" maxlength="80"></label>
+    <label class="f">Senha<span class="pw"><input name="pw" type="password" autocomplete="current-password" maxlength="100"><button type="button" data-eye aria-label="Mostrar senha" aria-pressed="false"><svg class="i" viewBox="0 0 24 24"><path d="M2 12s3.5-6.5 10-6.5S22 12 22 12s-3.5 6.5-10 6.5S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg></button></span></label>
+    <div class="ex"><div><div class="meter" id="aMeter" data-s="0"><i></i><i></i><i></i><i></i></div><p class="mt" id="aMeterT"></p>
+      <label class="f">Confirmar senha<input name="pw2" type="password" autocomplete="new-password" maxlength="100"></label></div></div>
+    <label class="keep"><input type="checkbox" name="keep"> Manter conectado neste navegador</label>
+    <p class="aerr" id="aErr" role="alert"></p>
+    <button class="btn pri" id="aGo">Entrar</button>
+  </form>
+  <p class="note">Modo demonstração: as contas ficam salvas só neste navegador, e a senha é guardada como hash com salt.</p>
+</div></div>
+<div id="toasts" aria-live="polite"></div>
+<dialog id="dlg"></dialog>
+
+<script src="js/core/data.js"></script>
+<script src="js/core/store.js"></script>
+<script src="js/core/ui.js"></script>
+<script src="js/core/auth.js"></script>
+<script src="js/views/dashboard.js"></script>
+<script src="js/views/products.js"></script>
+<script src="js/views/orders.js"></script>
+<script src="js/views/integrations.js"></script>
+<script src="js/views/analytics.js"></script>
+<script src="js/views/automations.js"></script>
+<script src="js/views/settings.js"></script>
+<script src="js/views/team.js"></script>
+<script src="js/views/help.js"></script>
+<script src="js/app.js"></script>
+<script src="js/auth-screen.js"></script>
+<script src="js/main.js"></script>
+</body>
+</html>
